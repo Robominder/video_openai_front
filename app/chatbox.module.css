@@ -85,10 +85,10 @@
 
 .chat {
     /*background-color: gray;*/
-    position: fixed;
+    position: absolute;
     left: 0;
     bottom: 0;
-    width: calc(100% - 20px);
+    right: 0;
     z-index: 5;
     display: flex;
     align-items: center;
@@ -102,7 +102,7 @@
     background-color: white;
     border-radius: 8px;
     /*margin: 1rem 1rem 3rem 1rem;*/
-    width: calc(100% - 90px);
+    width: 100%;
 }
 
 .loader {
