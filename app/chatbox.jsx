@@ -435,9 +435,9 @@ export default function ChatBox() {
             <div className={classes.main}>    
                 <div ref={messageRef} className={classes.messages}>
                     {
-                        messageItems.map((item) => {
+                        messageItems.map((item, ind) => {
                             return (
-                                <div key={item.id} className={classes.message}>
+                                <div key={item.id+ind} className={classes.message}>
                                     {
                                         item.role === 'assistant' &&
                                         <OpenAiIcon sx={{ mt: 1, ml: 1, mr: 2 }} />
@@ -480,7 +480,7 @@ export default function ChatBox() {
                                 <TextField 
                                 autoFocus={true}
                                 placeholder={`Type your message...`}
-                                disabled={loading}
+                                disabled={loading || !threadId}
                                 className={classes.inputField}
                                 fullWidth
                                 //multiline
@@ -493,13 +493,13 @@ export default function ChatBox() {
                                         <InputAdornment position="end">
                                             <React.Fragment>
                                                 <IconButton
-                                                disabled={loading || inputText.length === 0}
+                                                disabled={!threadId || loading || inputText.length === 0}
                                                 onClick={() => setInputText('')}
                                                 >
                                                     <ClearIcon />
                                                 </IconButton>
                                                 <IconButton
-                                                disabled={loading || inputText.length === 0}
+                                                disabled={!threadId || loading || inputText.length === 0}
                                                 onClick={handleSubmit}
                                                 >
                                                     <SendIcon />
