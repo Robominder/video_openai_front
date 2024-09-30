@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Typography, Box, Alert } from '@mui/material';
+import { Button, Typography, Box, Alert, LinearProgress } from '@mui/material';
 import { FileUploadOutlined, RestartAlt, Send } from '@mui/icons-material';
 
 import useVideobox from './useVideobox.js'
@@ -114,6 +114,11 @@ const VideoBox = () => {
             {error}
           </Alert>
         </Box>
+        : null
+      }
+      {
+        progress > 0 && progress<100 && !error
+        ? <LinearProgress sx={{mt: 2}}/>
         : null
       }
       {

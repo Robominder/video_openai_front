@@ -11,8 +11,10 @@ const useVideobox = () => {
 
   const analyzeVideo = async (file) => {
     if (!file){
-      setError("Video file is required!")
+      return setError("Video file is required!")
     }
+
+    setProgress(1)
 
     setError(null)
 
@@ -42,12 +44,16 @@ const useVideobox = () => {
       } else {
         console.error('Upload failed:', response.statusText);
         setError(`Upload failed: ${response.statusText}`)
+        setProgress(0)
       }
     } catch (error) {
       console.error('Error during upload:', error);
       setError(`Error during upload: ${error.message}`)
+      setProgress(0)
     }
   }
+
+  const checkProgress = () => {}
   
   const sendToOpenAi = async (images, message) => {
     try {
@@ -72,6 +78,7 @@ const useVideobox = () => {
 
       if(!response.ok) {
         console.log('Oops, an error occurred', response.status)
+        setProgress(0)
         setError("Error during OpenAI training: "+response.status)
       } else {
         const result = await response.json()
@@ -81,6 +88,7 @@ const useVideobox = () => {
 
     } catch(error) {
       console.log(error.name, error.message)
+      setProgress(0)
       setError(`Error during OpenAI training: ${error.message}`)
     }
   }
