@@ -6,10 +6,6 @@ import { Divider } from '@mui/material'
 import VideoBox from './videobox'
 import ChatBox from './chatbox'
 
-const FunctionTypes = [
-    { name: 'Using Chat Completions API', description: '' },
-    { name: 'Using Assistants API', description: 'You need to configure the Assistant in the Playground' }
-]
 
 export default function Sandbox() {
     const [leftWidth, setLeftWidth] = useState(35); // Initial width percentage

@@ -386,7 +386,6 @@ export default function ChatBox() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        alert(funcType)
         if(funcType > 0) {
 
             submitAssistant()

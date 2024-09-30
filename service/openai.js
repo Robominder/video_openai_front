@@ -72,6 +72,7 @@ export async function deleteThread({
 export async function addMessage({
     threadId,
     message,
+    imageUrls,
     messageId,
 }) {
 
@@ -85,7 +86,18 @@ export async function addMessage({
             threadId,
             {
                 role: 'user',
-                content: message,
+                content: ( 
+                    imageUrls?.length
+                    ?
+                        [
+                            { type: "text", text: message },
+                            ...(imageUrls.map(url => ({
+                                type: 'image_url',
+                                image_url: { url }
+                            })))
+                        ]
+                    : message
+                ),
                 metadata,
             }
         )

@@ -16,7 +16,7 @@ export const maxDuration = 60
 
 export async function POST(request) {
 
-    const { inquiry, threadId, messageId } = await request.json()
+    const { inquiry, threadId, messageId, imageUrls } = await request.json()
     
     if (!inquiry, !messageId) {
         return new Response('Bad request', {
@@ -57,7 +57,7 @@ export async function POST(request) {
 
         }
 
-        const message = await addMessage({ threadId: thread_id, message: inquiry, messageId: messageId })
+        const message = await addMessage({ threadId: thread_id, message: inquiry, messageId: messageId, imageUrls: imageUrls })
 
         console.log('message', message)
 

@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box, Alert } from '@mui/material';
 import { FileUploadOutlined, RestartAlt, Send } from '@mui/icons-material';
 
+import useVideobox from './useVideobox.js'
+
 const VideoBox = () => {
+
+  const { analyzeVideo, error, progress } = useVideobox()
+
   const [videoFile, setVideoFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false); 
 
@@ -41,12 +46,18 @@ const VideoBox = () => {
     document.getElementById('video-upload').click(); // Trigger file input
   };
 
+  const handleVideo = async () => {
+    await analyzeVideo(videoFile)
+    
+  }
+
   return (
     <Box 
       sx={{ 
         px: 4, 
         textAlign: 'center', 
         height: '100%',
+        overflowY: 'scroll',
         backgroundColor: '#10172A',
         color: 'white',
         display: 'flex',
@@ -96,6 +107,26 @@ const VideoBox = () => {
         </>
       )}
       {
+        error
+        ?
+        <Box sx={{mt: 2}}>
+          <Alert severity='error' variant='filled' sx={{borderRadius: 2}}>
+            {error}
+          </Alert>
+        </Box>
+        : null
+      }
+      {
+        progress === 100 && !error
+        ?
+        <Box sx={{mt: 2}}>
+          <Alert severity='success' variant='filled' sx={{borderRadius: 2, textAlign: 'left'}}>
+            The video has been analized successfully. Please continue in the chat section with your questions about the video.
+          </Alert>
+        </Box>
+        : null
+      }
+      {
         videoFile && (
           <Box 
             sx={{
@@ -108,7 +139,7 @@ const VideoBox = () => {
               textAlign: 'end'
             }}
           >
-            <Send fontSize='large' sx={{verticalAlign: 'middle'}} />
+            <Send fontSize='large' sx={{verticalAlign: 'middle'}} onClick={handleVideo}/>
           </Box>
         )
       }
