@@ -6,9 +6,8 @@ import useVideobox from './useVideobox.js'
 
 const VideoBox = () => {
 
-  const { analyzeVideo, error, progress } = useVideobox()
+  const { analyzeVideo, error, progress, onReset, videoFile, setVideoFile } = useVideobox()
 
-  const [videoFile, setVideoFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false); 
 
   const handleFileChange = (event) => {
@@ -117,6 +116,7 @@ const VideoBox = () => {
         </Box>
         : null
       }
+      {console.log(progress, error)}
       {
         progress > 0 && progress<100 && !error
         ? <LinearProgress sx={{mt: 2}}/>
