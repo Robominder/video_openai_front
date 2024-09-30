@@ -101,6 +101,7 @@ const VideoBox = () => {
         <>
           <video 
             controls 
+            autoPlay={true}
             src={URL.createObjectURL(videoFile)} 
             style={{ width: '100%' }} 
           />
