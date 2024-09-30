@@ -67,7 +67,7 @@ export default function ChatBox() {
     
     const firstMsg = {
         "role": "assistant",
-        "content": "How may I assist you with programming or maintaining FANUC industrial robots? If you have any questions or if there are issues you're encountering, feel free to let me know."
+        "content": "How may I assist you with analysing your video?"
     };
     
     React.useEffect(() => {
@@ -80,8 +80,7 @@ export default function ChatBox() {
 
         if(isMounted) {
             setFuncType(1)
-            storedMessages.unshift(firstMsg)
-            setMessageItems(storedMessages)
+            setMessageItems([firstMsg, ...storedMessages])
 
             // Check if the browser supports the Web App Install Prompt API
             if ('getInstalledRelatedApps' in window.navigator) {
