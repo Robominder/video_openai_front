@@ -6,7 +6,7 @@ import useVideobox from './useVideobox.js'
 
 const VideoBox = () => {
 
-  const { analyzeVideo, error, progress, onReset, videoFile, setVideoFile } = useVideobox()
+  const { analyzeVideo, error, progress, videoFile, setVideoFile } = useVideobox()
 
   const [isDragging, setIsDragging] = useState(false); 
 
@@ -142,11 +142,14 @@ const VideoBox = () => {
               backgroundColor: isDragging ? '#2c3e50' : "rgba(200, 200, 200, .1)",
               borderRadius: 3,
               cursor: 'pointer',
-              textAlign: 'center' // Center the content
+              textAlign: 'center', // Center the content
             }}
+            onClick={handleVideo} // Move the onClick handler to Box
           >
-            <span style={{ fontSize: '1em', marginRight: '5px', color: '#fff', verticalAlign: 'middle' }}>Analyse the video</span>
-            <Assessment fontSize='large' sx={{verticalAlign: 'middle', color: '#fff'}} onClick={handleVideo}/> {/* Updated icon */}
+            <span style={{ fontSize: '1em', marginRight: '5px', color: '#fff', verticalAlign: 'middle' }}>
+              Analyse the video
+            </span>
+            <Assessment fontSize='large' sx={{ verticalAlign: 'middle', color: '#fff' }} /> {/* Icon without onClick */}
           </Box>
         )
       }
