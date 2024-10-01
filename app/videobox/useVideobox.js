@@ -8,10 +8,9 @@ const useVideobox = () => {
   const threadId = useAppStore((state) => state.threadId)
   const setThreadId = useAppStore((state) => state.setThreadId)
 
-  const [videoFile, setVideoFile] = useState(null)
+  const [videoFile, setVideoFile] = useState(null);
   const [progress, setProgress] = useState(null)
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
 
 
   useEffect(()=>{
