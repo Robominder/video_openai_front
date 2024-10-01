@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Typography, Box, Alert, LinearProgress } from '@mui/material';
-import { FileUploadOutlined, RestartAlt, Send } from '@mui/icons-material';
+import { FileUploadOutlined, RestartAlt, Assessment } from '@mui/icons-material'; // Updated import
 
 import useVideobox from './useVideobox.js'
 
@@ -127,7 +127,7 @@ const VideoBox = () => {
         ?
         <Box sx={{mt: 2}}>
           <Alert severity='success' variant='filled' sx={{borderRadius: 2, textAlign: 'left'}}>
-            The video has been analized successfully. Please continue in the chat section with your questions about the video.
+            The video has been analised successfully. Please continue in the chat section with your questions about the video.
           </Alert>
         </Box>
         : null
@@ -142,10 +142,11 @@ const VideoBox = () => {
               backgroundColor: isDragging ? '#2c3e50' : "rgba(200, 200, 200, .1)",
               borderRadius: 3,
               cursor: 'pointer',
-              textAlign: 'end'
+              textAlign: 'center' // Center the content
             }}
           >
-            <Send fontSize='large' sx={{verticalAlign: 'middle'}} onClick={handleVideo}/>
+            <span style={{ fontSize: '1em', marginRight: '5px', color: '#fff', verticalAlign: 'middle' }}>Analyse the video</span>
+            <Assessment fontSize='large' sx={{verticalAlign: 'middle', color: '#fff'}} onClick={handleVideo}/> {/* Updated icon */}
           </Box>
         )
       }

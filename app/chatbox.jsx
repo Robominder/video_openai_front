@@ -79,8 +79,9 @@ export default function ChatBox() {
     React.useEffect(() => {
 
         if(isMounted) {
-            setFuncType(1)
-            setMessageItems([firstMsg, ...storedMessages])
+            handleClearMessages();
+            setFuncType(1);
+            setMessageItems([firstMsg]);
 
             // Check if the browser supports the Web App Install Prompt API
             if ('getInstalledRelatedApps' in window.navigator) {
@@ -470,7 +471,7 @@ export default function ChatBox() {
                             <ResetIcon />
                         </Fab>
                     </div>
-                    <div className={classes.input}x>
+                    <div className={classes.input}>
                         <NoSsr>
                             <Box 
                             component="form" 
@@ -495,14 +496,32 @@ export default function ChatBox() {
                                                 <IconButton
                                                 disabled={!threadId || loading || inputText.length === 0}
                                                 onClick={() => setInputText('')}
+                                                style={{ 
+                                                    border: '1px solid #ccc', 
+                                                    padding: '5px', 
+                                                    color: !threadId || loading || inputText.length === 0 ? 'lightgray' : '#fff', 
+                                                    backgroundColor: !threadId || loading || inputText.length === 0 ? '#f0f0f0' : '#007bff', 
+                                                    borderRadius: '5px', 
+                                                    marginRight: '10px' 
+                                                }}
                                                 >
-                                                    <ClearIcon />
+                                                    <ClearIcon style={{ color: !threadId || loading || inputText.length === 0 ? 'lightgray' : '#fff' }} />
+                                                    <span style={{ fontSize: '0.7em', marginLeft: '2px', color: !threadId || loading || inputText.length === 0 ? 'lightgray' : '#fff' }}>Cancel</span>
                                                 </IconButton>
                                                 <IconButton
                                                 disabled={!threadId || loading || inputText.length === 0}
                                                 onClick={handleSubmit}
+                                                data-testid="send-button"
+                                                style={{ 
+                                                    border: '1px solid #ccc', 
+                                                    padding: '5px', 
+                                                    color: !threadId || loading || inputText.length === 0 ? 'lightgray' : '#fff', 
+                                                    backgroundColor: !threadId || loading || inputText.length === 0 ? '#f0f0f0' : '#007bff', 
+                                                    borderRadius: '5px' 
+                                                }}
                                                 >
-                                                    <SendIcon />
+                                                    <span style={{ fontSize: '0.7em', marginRight: '5px', color: !threadId || loading || inputText.length === 0 ? 'lightgray' : '#fff' }}>Send</span>
+                                                    <SendIcon style={{ color: !threadId || loading || inputText.length === 0 ? 'lightgray' : '#fff' }} />
                                                 </IconButton>
                                             </React.Fragment>
                                         </InputAdornment>
