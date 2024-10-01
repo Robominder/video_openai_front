@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography, Box, Alert, LinearProgress } from '@mui/material';
 import { FileUploadOutlined, RestartAlt, Assessment } from '@mui/icons-material'; // Updated import
 
@@ -7,13 +7,40 @@ import useVideobox from './useVideobox.js'
 const VideoBox = () => {
 
   const { analyzeVideo, error, progress, videoFile, setVideoFile } = useVideobox()
+  const [videoUrl, setVideoUrl] = useState(null);  // Add this line
 
   const [isDragging, setIsDragging] = useState(false); 
 
+  useEffect(() => {
+    // Clean up the object URL when the component unmounts or when videoFile changes
+    return () => {
+      if (videoUrl) {
+        URL.revokeObjectURL(videoUrl);
+      }
+    };
+  }, [videoUrl]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    handleNewFile(file);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault(); // Prevent default behavior
+    const file = event.dataTransfer.files[0];
+    handleNewFile(file);
+  };
+
+  const handleNewFile = (file) => {
     if (file && file.type.startsWith('video/')) {
       setVideoFile(file);
+      // Revoke the old URL if it exists
+      if (videoUrl) {
+        URL.revokeObjectURL(videoUrl);
+      }
+      // Create a new URL
+      const newVideoUrl = URL.createObjectURL(file);
+      setVideoUrl(newVideoUrl);
     } else {
       alert('Please upload a valid video file.');
     }
@@ -21,16 +48,6 @@ const VideoBox = () => {
 
   const handleDragOver = (event) => {
     event.preventDefault(); // Prevent default behavior
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault(); // Prevent default behavior
-    const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith('video/')) {
-      setVideoFile(file);
-    } else {
-      alert('Please upload a valid video file.');
-    }
   };
 
   const handleDragEnter = () => {
@@ -46,9 +63,10 @@ const VideoBox = () => {
   };
 
   const handleVideo = async () => {
-    await analyzeVideo(videoFile)
-    
-  }
+    console.log('Before analyzeVideo:', videoFile); // Log before analyzing
+    await analyzeVideo(videoFile);
+    console.log('After analyzeVideo:', videoFile); // Log after analyzing
+  };
 
   return (
     <Box 
@@ -96,15 +114,13 @@ const VideoBox = () => {
           Click to Upload a New Video
         </Typography>
       </Box>
-      {videoFile && (
-        <>
-          <video 
-            controls 
-            autoPlay={true}
-            src={URL.createObjectURL(videoFile)} 
-            style={{ width: '100%' }} 
-          />
-        </>
+      {videoUrl && (
+        <video 
+          controls 
+          autoPlay={true}
+          src={videoUrl}
+          style={{ width: '100%', marginBottom: '20px' }} 
+        />
       )}
       {
         error
@@ -127,7 +143,7 @@ const VideoBox = () => {
         ?
         <Box sx={{mt: 2}}>
           <Alert severity='success' variant='filled' sx={{borderRadius: 2, textAlign: 'left'}}>
-            The video has been analised successfully. Please continue in the chat section with your questions about the video.
+            The video has been analysed successfully. Please continue in the chat section with your questions about the video.
           </Alert>
         </Box>
         : null
