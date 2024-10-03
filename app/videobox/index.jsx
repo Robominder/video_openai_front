@@ -166,11 +166,12 @@ const VideoBox = () => {
               component="form" 
               className={classes.box}
               onSubmit={handleVideo}
-              sx={{bgcolor: 'white', borderRadius: '4px!important'}}
+              sx={{bgcolor: 'white', borderRadius: '4px!important', mt: 2}}
               noValidate>
                   <TextField 
                   autoFocus={true}
                   placeholder={`Type the prompt...`}
+                  disabled={Boolean(progress)}
                   className={classes.inputField}
                   fullWidth
                   //multiline
@@ -183,7 +184,7 @@ const VideoBox = () => {
                           <InputAdornment position="end">
                               <React.Fragment>
                                   <IconButton
-                                  disabled={progress || inputText.length === 0}
+                                  disabled={Boolean(progress) || inputText.length === 0}
                                   onClick={handleVideo}
                                   data-testid="send-button"
                                   style={{ 
