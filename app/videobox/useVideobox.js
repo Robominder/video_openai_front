@@ -23,7 +23,7 @@ const useVideobox = () => {
   }, [threadId])
     
 
-  const analyzeVideo = async () => {
+  const analyzeVideo = async (text) => {
     const file = videoFile
     if (!file){
       return setError("Video file is required!")
@@ -39,6 +39,7 @@ const useVideobox = () => {
   
     // Append the video file to the form data
     formData.append('file', file);
+    formData.append('text', text);
 
     try {
       const response = await fetch(BE_HOST+'/files/', {

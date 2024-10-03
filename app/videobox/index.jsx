@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Box, Alert, LinearProgress } from '@mui/material';
 import { FileUploadOutlined, RestartAlt, Assessment } from '@mui/icons-material'; // Updated import
+import NoSsr from '@mui/base/NoSsr'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
+import SendIcon from '@mui/icons-material/Send'
 
 import useVideobox from './useVideobox.js'
+import classes from '../chatbox.module.css'
 
 const VideoBox = () => {
 
@@ -10,6 +16,10 @@ const VideoBox = () => {
   const [videoUrl, setVideoUrl] = useState(null);  // Add this line
 
   const [isDragging, setIsDragging] = useState(false); 
+
+  const messageRef = React.useRef(null)
+  const inputRef = React.useRef(null)
+  const [inputText, setInputText] = React.useState('')
 
   useEffect(() => {
     // Clean up the object URL when the component unmounts or when videoFile changes
@@ -62,9 +72,10 @@ const VideoBox = () => {
     document.getElementById('video-upload').click(); // Trigger file input
   };
 
-  const handleVideo = async () => {
+  const handleVideo = async (e) => {
+    e.preventDefault()
     console.log('Before analyzeVideo:', videoFile); // Log before analyzing
-    await analyzeVideo(videoFile);
+    await analyzeVideo(inputText);
     console.log('After analyzeVideo:', videoFile); // Log after analyzing
   };
 
@@ -150,23 +161,49 @@ const VideoBox = () => {
       }
       {
         videoFile && (
-          <Box 
-            sx={{
-              px: 3,
-              py: 1,
-              mt: 2, 
-              backgroundColor: isDragging ? '#2c3e50' : "rgba(200, 200, 200, .1)",
-              borderRadius: 3,
-              cursor: 'pointer',
-              textAlign: 'center', // Center the content
-            }}
-            onClick={handleVideo} // Move the onClick handler to Box
-          >
-            <span style={{ fontSize: '1em', marginRight: '5px', color: '#fff', verticalAlign: 'middle' }}>
-              Analyse the video
-            </span>
-            <Assessment fontSize='large' sx={{ verticalAlign: 'middle', color: '#fff' }} /> {/* Icon without onClick */}
-          </Box>
+          <NoSsr>
+              <Box 
+              component="form" 
+              className={classes.box}
+              onSubmit={handleVideo}
+              sx={{bgcolor: 'white', borderRadius: '4px!important'}}
+              noValidate>
+                  <TextField 
+                  autoFocus={true}
+                  placeholder={`Type the prompt...`}
+                  className={classes.inputField}
+                  fullWidth
+                  //multiline
+                  //maxRows={4}
+                  inputRef={inputRef}
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="end">
+                              <React.Fragment>
+                                  <IconButton
+                                  disabled={progress || inputText.length === 0}
+                                  onClick={handleVideo}
+                                  data-testid="send-button"
+                                  style={{ 
+                                      border: '1px solid #ccc', 
+                                      padding: '5px', 
+                                      color: progress || inputText.length === 0 ? 'lightgray' : '#fff', 
+                                      backgroundColor: progress || inputText.length === 0 ? '#f0f0f0' : '#007bff', 
+                                      borderRadius: '5px' 
+                                  }}
+                                  >
+                                      <span style={{ fontSize: '0.7em', marginRight: '5px', color: progress || inputText.length === 0 ? 'lightgray' : '#fff' }}>Send</span>
+                                      <SendIcon style={{ color: progress || inputText.length === 0 ? 'lightgray' : '#fff' }} />
+                                  </IconButton>
+                              </React.Fragment>
+                          </InputAdornment>
+                      ),
+                  }}
+                  />
+              </Box>
+          </NoSsr>
         )
       }
     </Box>
