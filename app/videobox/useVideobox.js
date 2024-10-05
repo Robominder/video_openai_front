@@ -2,7 +2,7 @@ import useAppStore from '../../stores/appStore'
 import { getUniqueId } from '../../lib/utils'
 import { useEffect, useState } from 'react'
 
-const BE_HOST = 'http://35.246.9.21:8000'
+const BE_HOST = 'http://194.61.20.182:8000'
 
 const useVideobox = () => {
   const threadId = useAppStore((state) => state.threadId)
