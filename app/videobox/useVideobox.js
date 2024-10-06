@@ -71,7 +71,7 @@ const useVideobox = () => {
     for (const key in data) {
         if (data.hasOwnProperty(key)) {
             data[key].forEach(item => {
-                item.frame = `${BE_HOST}${item.frame}`
+                item.frame = `${BE_HOST}${item?.frame?.startsWith('.') ? item.frame.slice(1) : item.frame}`
                 imageSet.push(item.frame);
             });
         }
