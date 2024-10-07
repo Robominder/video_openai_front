@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Typography, Box, Alert, LinearProgress } from '@mui/material';
+import { Button, Typography, Box, Alert, LinearProgress, Select, MenuItem, FormControl, InputLabel, FilledInput, OutlinedInput } from '@mui/material';
 import { FileUploadOutlined, RestartAlt, Assessment } from '@mui/icons-material'; // Updated import
 import NoSsr from '@mui/base/NoSsr'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -17,7 +17,7 @@ const VideoBox = () => {
 
   const [isDragging, setIsDragging] = useState(false); 
 
-  const messageRef = React.useRef(null)
+  const [model, setModel] = useState('')
   const inputRef = React.useRef(null)
   const [inputText, setInputText] = React.useState('')
 
@@ -72,10 +72,13 @@ const VideoBox = () => {
     document.getElementById('video-upload').click(); // Trigger file input
   };
 
-  const handleVideo = async (e) => {
-    e.preventDefault()
+  const handleVideo = async (e, model) => {
+    e?.preventDefault()
+    if(!model){
+      alert("select a model to analyze the video.")
+    }
     console.log('Before analyzeVideo:', videoFile); // Log before analyzing
-    await analyzeVideo(inputText);
+    await analyzeVideo(inputText, model);
     console.log('After analyzeVideo:', videoFile); // Log after analyzing
   };
 
@@ -94,6 +97,7 @@ const VideoBox = () => {
       }}
     >
       <Box 
+        hidden={progress > 0 && progress < 100}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         onDragEnter={handleDragEnter} 
@@ -125,9 +129,10 @@ const VideoBox = () => {
           Click to Upload a New Video
         </Typography>
       </Box>
-      {videoUrl && (
+      {videoUrl && videoFile && (
         <video 
-          controls 
+          controls
+          key={videoUrl} 
           autoPlay={true}
           src={videoUrl}
           style={{ width: '100%', marginBottom: '20px' }} 
@@ -164,6 +169,7 @@ const VideoBox = () => {
           <NoSsr>
               <Box 
               component="form" 
+              autoComplete='off'
               className={classes.box}
               onSubmit={handleVideo}
               sx={{bgcolor: 'white', borderRadius: '4px!important', mt: 2}}
@@ -183,21 +189,55 @@ const VideoBox = () => {
                       endAdornment: (
                           <InputAdornment position="end">
                               <React.Fragment>
-                                  <IconButton
-                                  disabled={Boolean(progress) || inputText.length === 0}
-                                  onClick={handleVideo}
-                                  data-testid="send-button"
-                                  style={{ 
-                                      border: '1px solid #ccc', 
-                                      padding: '5px', 
-                                      color: progress || inputText.length === 0 ? 'lightgray' : '#fff', 
-                                      backgroundColor: progress || inputText.length === 0 ? '#f0f0f0' : '#007bff', 
-                                      borderRadius: '5px' 
-                                  }}
+                                  {/* <IconButton
+                                    
+                                    onClick={handleVideo}
+                                    data-testid="send-button"
+                                    style={{ 
+                                        border: '1px solid #ccc', 
+                                        padding: '5px', 
+                                        color: progress || inputText.length === 0 ? 'lightgray' : '#fff', 
+                                        backgroundColor: progress || inputText.length === 0 ? '#f0f0f0' : '#007bff', 
+                                        borderRadius: '5px' 
+                                    }}
                                   >
                                       <span style={{ fontSize: '0.7em', marginRight: '5px', color: progress || inputText.length === 0 ? 'lightgray' : '#fff' }}>Send</span>
                                       <SendIcon style={{ color: progress || inputText.length === 0 ? 'lightgray' : '#fff' }} />
-                                  </IconButton>
+                                  </IconButton> */}
+                                  <FormControl 
+                                    sx={{minWidth: 95}} 
+                                    size='small' 
+                                    disabled={Boolean(progress) || inputText.length === 0}
+                                  >
+                                    <Select
+                                      displayEmpty
+                                      labelId="send-via-label"
+                                      input={<OutlinedInput />}
+                                      id="send-via-select"
+                                      value={model}
+                                      renderValue={(value)=> `Sent to ${value || ''}`}
+                                      // MenuProps={MenuProps}
+                                      inputProps={{ 'aria-label': 'Without label' }}
+                                      sx={{
+                                        background: '#007bff', 
+                                        color: 'white',
+                                        '& .MuiSvgIcon-root': {
+                                          color: 'white'
+                                        },
+                                        '&.Mui-disabled': {
+                                          background: 'lightgray',
+                                          opacity: .5,
+                                          '& .MuiSvgIcon-root': {
+                                            color: 'inherit'
+                                          },
+                                        }
+                                      }}
+                                      onChange={(e) => {setModel(e.target.value); handleVideo(e, e.target.value)}}
+                                    >
+                                      <MenuItem value={'YOLO'}>YOLO</MenuItem>
+                                      <MenuItem value={'SAM2'}>SAM2</MenuItem>
+                                    </Select>
+                                  </FormControl>
                               </React.Fragment>
                           </InputAdornment>
                       ),

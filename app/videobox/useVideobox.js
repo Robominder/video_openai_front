@@ -2,17 +2,17 @@ import useAppStore from '../../stores/appStore'
 import { getUniqueId } from '../../lib/utils'
 import { useEffect, useState } from 'react'
 
-const BE_HOST = 'http://194.61.20.182:8000'
+const YOLO_HOST = 'http://35.246.9.21:8000'
+const SAM2_HOST = 'http://194.61.20.182:8000'
 
 const useVideobox = () => {
   const threadId = useAppStore((state) => state.threadId)
   const setThreadId = useAppStore((state) => state.setThreadId)
 
-  const [videoFile, setVideoFile] = useState(null)
+  const [videoFile, _setVideoFile] = useState(null)
   const [progress, setProgress] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-
 
   useEffect(()=>{
     if (!threadId){
@@ -22,8 +22,15 @@ const useVideobox = () => {
     }
   }, [threadId])
     
+  const setVideoFile = async (videoFile) => {
+    if (threadId)
+      await deleteThread()
+    setError(null)
+    setProgress(0)
+    _setVideoFile(videoFile)
+  }
 
-  const analyzeVideo = async (text) => {
+  const analyzeVideo = async (text, model) => {
     const file = videoFile
     if (!file){
       return setError("Video file is required!")
@@ -40,6 +47,8 @@ const useVideobox = () => {
     // Append the video file to the form data
     formData.append('file', file);
     formData.append('text', text);
+    
+    const BE_HOST = model === 'SAM2' ? SAM2_HOST : YOLO_HOST
 
     try {
       const response = await fetch(BE_HOST+'/files/', {
@@ -51,7 +60,7 @@ const useVideobox = () => {
         const result = await response.json();
         let video_url = result.video_url
 
-        checkProgress(video_url)
+        checkProgress(video_url, BE_HOST)
 
       } else {
         console.error('Upload failed:', response.statusText);
@@ -65,7 +74,7 @@ const useVideobox = () => {
     }
   }
 
-  function getUniqueImageFrames(data) {
+  function getUniqueImageFrames(BE_HOST, data) {
     const imageSet = [];
 
     for (const key in data) {
@@ -80,7 +89,7 @@ const useVideobox = () => {
     return [imageSet?.[0], imageSet?.[imageSet.length-1]];
   }
 
-  const checkProgress = async (video_url) => {
+  const checkProgress = async (video_url, BE_HOST) => {
     const response = await fetch(BE_HOST+video_url, {
       method: 'GET'
     });
@@ -88,14 +97,14 @@ const useVideobox = () => {
     if (response.ok) {
       const result = await response.json();
 
-      let images = getUniqueImageFrames(result)
+      let images = getUniqueImageFrames(BE_HOST, result)
       sendToOpenAi(images, JSON.stringify(result))
 
 
     } else {
       if (response.status === 429){
         setTimeout(async ()=>{
-          await checkProgress(video_url)
+          await checkProgress(video_url, BE_HOST)
         }, 4000)
         return 
       }
