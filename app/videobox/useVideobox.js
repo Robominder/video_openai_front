@@ -75,18 +75,20 @@ const useVideobox = () => {
   }
 
   function getUniqueImageFrames(BE_HOST, data) {
-    const imageSet = [];
-
-    for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-            data[key].forEach(item => {
-                item.frame = `${BE_HOST}${item?.frame?.startsWith('.') ? item.frame.slice(1) : item.frame}`
-                imageSet.push(item.frame);
-            });
-        }
+    
+    data = data.replaceAll('./public/frames/', '/public/frames/')
+    const pattern = /\/public\/frames\/[^\/]+\.(jpg|jpeg)/g;
+    // Find all matches
+    const matches = data.match(pattern);
+    let images  = []
+    if (matches?.length){
+      const firstMatch = BE_HOST + matches[0];
+      const lastMatch = BE_HOST + matches[matches.length - 1];
+      images = [firstMatch, lastMatch]
     }
+    data = data.replaceAll('/public/frames/', `${BE_HOST}/public/frames/`)
 
-    return [imageSet?.[0], imageSet?.[imageSet.length-1]];
+    return {images, data};
   }
 
   const checkProgress = async (video_url, BE_HOST) => {
@@ -95,10 +97,9 @@ const useVideobox = () => {
     });
 
     if (response.ok) {
-      const result = await response.json();
-
-      let images = getUniqueImageFrames(BE_HOST, result)
-      sendToOpenAi(images, JSON.stringify(result))
+      const result = await response.text();
+      let {images, data} = getUniqueImageFrames(BE_HOST, result)
+      sendToOpenAi(images, data)
 
 
     } else {
